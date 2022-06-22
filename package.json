@@ -1,0 +1,32 @@
+{
+  "name": "day2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/suryaa6666/day2-chapter2-routing-surya-dumbways.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/suryaa6666/day2-chapter2-routing-surya-dumbways/issues"
+  },
+  "homepage": "https://github.com/suryaa6666/day2-chapter2-routing-surya-dumbways#readme",
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "connect-multiparty": "^2.2.0",
+    "express": "^4.18.1",
+    "express-fileupload": "^1.4.0",
+    "fs": "^0.0.1-security",
+    "handlebars": "^4.7.7",
+    "pg": "^8.7.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  }
+}

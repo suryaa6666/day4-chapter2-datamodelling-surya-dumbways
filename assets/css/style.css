@@ -1,0 +1,159 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+* {
+    font-family: 'Roboto', sans-serif;
+}
+
+body {
+    background-color: #E3E7EB;
+}
+
+
+a {
+    font-size: 20px;
+}
+
+.project-date-container {
+    flex-direction: row;
+}
+
+.project-container {
+    width: 60%;
+}
+
+label {
+    font-size: 20px;
+}
+
+.navbar-flex {
+    flex-direction: row;
+}
+
+.nav-contact-container {
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.bigger-font {
+    font-size: 20px !important;
+}
+
+.text-align-justify {
+    text-align: justify;
+}
+
+.about-flex {
+    flex-direction: row;
+}
+
+.contactcv-flex {
+    flex-direction: row;
+}
+
+.card-m-5 {
+    margin: 50px;
+}
+
+.project-detail-image {
+    object-fit: cover;
+    height: 300px;
+    width: 500px;
+    max-height: 300px;
+}
+
+.project-action {
+    bottom: 0;
+    position: absolute;
+    right: 0;
+    left: 0;
+}
+
+.project-detail {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn:hover {
+    background-color: #107C7C !important;
+}
+
+.project-detail-technologies-wrapper {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+@media only screen and (max-width: 1100px) {
+    .about-flex {
+        flex-direction: column;
+    }
+}
+
+@media only screen and (max-width: 992px) {
+    .navbar-flex {
+        flex-direction: column;
+    }
+
+    .project-detail-description {
+        margin-top: 50px;
+    }
+
+    .project-detail-image-container {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .project-detail {
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
+
+    .nav-contact-container {
+        justify-content: flex-start;
+        align-items: center;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    .project-container {
+        width: 80%;
+    }
+}
+
+@media only screen and (max-width: 700px) {
+    .card-m-5 {
+        margin: 0;
+    }
+
+    .contactcv-flex {
+        flex-direction: column;
+    }
+}
+
+@media only screen and (max-width: 545px) {
+    .project-date-container {
+        flex-direction: column;
+    }
+
+    .project-container {
+        width: 85%;
+    }
+
+    .ms-5 {
+        margin-left: 0 !important;
+    }
+
+    .me-5 {
+        margin-right: 0 !important;
+    }
+
+    .project-detail-image {
+        height: 200px;
+        width: 100%;
+    }
+}

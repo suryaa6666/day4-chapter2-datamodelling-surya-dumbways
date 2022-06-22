@@ -1,0 +1,84 @@
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CONTACT</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="icon" href="../assets/img/icon.png" type="image/png" />
+</head>
+
+<body>
+
+  <nav class="navbar navbar-expand-lg bg-light">
+    <div class="container-fluid">
+      <img src="../assets/img/logo.png" class="img-fluid" alt="Image cannot be loaded" />
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-3 d-xxl-flex navbar-flex flex-grow-1">
+          <div class="d-flex navbar-flex flex-grow-1">
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="../">Home</a>
+            </li>
+            {{#if isLogin}}
+            <li class="nav-item">
+              <a class="nav-link" href="../add-project">Add Project</a>
+            </li>
+            {{/if}}
+          </div>
+          <div class="d-flex me-3 flex-grow-1 nav-contact-container">
+            <a href="../contact" class="btn btn-dark rounded">Contact Me</a>
+          </div>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="me-5 ms-5 mt-5 mb-5 d-flex justify-content-center">
+    <div class="project-container">
+      <h1 class="text-center">GET IN TOUCH</h1>
+      <form class="mt-5">
+        <div class="mb-3">
+          <label for="name" class="form-label">Name</label>
+          <input type="text" class="form-control shadow" id="name" />
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input type="email" class="form-control shadow" id="email" />
+        </div>
+        <div class="mb-3">
+          <label for="phone" class="form-label">Phone Number</label>
+          <input type="number" class="form-control shadow" id="phone" />
+        </div>
+        <div class="mb-3">
+          <label for="subject" class="form-label">Subject</label>
+          <select class="form-select" id="subject">
+            <option value="" selected>Select subject...</option>
+            <option value="Frontend">Frontend</option>
+            <option value="Backend">Backend</option>
+            <option value="Fullstack">Fullstack</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="message" class="form-label">Your Message</label>
+          <textarea class="form-control shadow" id="message" rows="5"></textarea>
+        </div>
+        <div class="d-flex justify-content-end mt-5">
+          <button type="submit" class="btn btn-dark rounded-pill ps-4 pe-4" onclick="submitData(event);">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous">
+    </script>
+  <script src="../assets/js/contact.js"></script>
+</body>
+
+</html>
