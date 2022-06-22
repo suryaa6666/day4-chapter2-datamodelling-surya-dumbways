@@ -41,7 +41,7 @@
     <h1 class="text-center">{{projectDetail.name}}</h1>
     <div class="project-detail mt-5">
       <div class="project-detail-image-container">
-        <img src="../assets/imageupload/{{projectDetail.imageupload}}" class="card-img-top project-detail-image"
+        <img src="../assets/imageupload/{{projectDetail.image}}" class="card-img-top project-detail-image"
           alt="Image cannnot be loaded" />
       </div>
       <div class="project-detail-description ms-5">
@@ -49,9 +49,9 @@
           <h3>Duration</h3>
           <p>
             <i class="fa-solid fa-calendar-days"></i>
-            {{projectDetail.startdate}}
+            {{projectDetail.start_date}}
             -
-            {{projectDetail.enddate}}
+            {{projectDetail.end_date}}
           </p>
           <p>
             <i class="fa-regular fa-clock"></i>

@@ -12,21 +12,7 @@ app.set('view engine', 'hbs'); // view engine is set to handlebars
 app.use('/assets', express.static(__dirname + '/assets')); // static files are served from the assets folder
 app.use(express.urlencoded({ extended: false }));
 
-// let dataProject = [
-//     {
-//         id: 1,
-//         name: 'Aplikasi Rental PS',
-//         startdate: '2022-06-01',
-//         enddate: '2022-06-30',
-//         duration: '1 bulan',
-//         description: 'Aplikasi ini menggunakan React Native dan MySQL untuk mengelola data rental PS',
-//         technologies: ['react', 'android'],
-//         imageupload: 'projek1.jpg'
-//     }
-// ];
-
 let isLogin = true;
-
 
 function dhm(t) {
     var cd = 24 * 60 * 60 * 1000,
@@ -46,6 +32,25 @@ function dhm(t) {
     return d;
 }
 
+
+const convertyyyymmdd = (date) => {
+    let yyyy = new Date(date).getFullYear();
+    let mm = new Date(date).getMonth() + 1;
+    mm = mm < 10 ? "0" + mm : mm;
+    let dd = new Date(date).getDate();
+
+    return `${yyyy}-${mm}-${dd}`;
+}
+
+const convertddmmyyyy = (date) => {
+    let yyyy = new Date(date).getFullYear();
+    let mm = new Date(date).getMonth() + 1;
+    mm = mm < 10 ? "0" + mm : mm;
+    let dd = new Date(date).getDate();
+
+    return `${dd}-${mm}-${yyyy}`;
+}
+
 db.connect((err, client, done) => {
 
     if (err) throw err;
@@ -56,22 +61,25 @@ db.connect((err, client, done) => {
             if (err) throw err;
 
             let data = result.rows.map((item) => {
+                let duration = dhm(new Date(item.end_date) - new Date(item.start_date));
+                duration = Math.floor(duration / 30) <= 0 ? duration + ' hari' : duration % 30 == 0 ? Math.floor(duration / 30) + ' bulan ' : Math.floor(duration / 30) + ' bulan ' + duration % 30 + ' hari';
                 return {
                     ...item,
+                    duration,
                     isLogin
                 }
             });
 
             data.forEach((item) => {
+
                 if (typeof (item.technologies) == 'string') {
                     item.technologies = [item.technologies];
                 }
             });
 
-            // console.log(data)
+            console.log(data)
 
             res.render('index', { isLogin, data });
-
         });
 
     });
@@ -79,49 +87,24 @@ db.connect((err, client, done) => {
     app.get('/project-detail/:id', (req, res) => {
         let id = req.params.id;
 
-        let projectDetail = dataProject.find((item) => {
-            return item.id == id;
-        })
+        client.query(`SELECT * FROM public.tb_project WHERE id=${id}`, (err, result) => {
+            if (err) throw err;
 
-        res.render('project-detail', { projectDetail });
+            let projectDetail = result.rows[0];
+
+            let duration = dhm(new Date(projectDetail.end_date) - new Date(projectDetail.start_date));
+            duration = Math.floor(duration / 30) <= 0 ? duration + ' hari' : duration % 30 == 0 ? Math.floor(duration / 30) + ' bulan ' : Math.floor(duration / 30) + ' bulan ' + duration % 30 + ' hari';
+
+            projectDetail.duration = duration;
+            projectDetail.start_date = convertddmmyyyy(projectDetail.start_date);
+            projectDetail.end_date = convertddmmyyyy(projectDetail.end_date);
+
+            res.render('project-detail', { projectDetail });
+        });
     });
 
     app.get('/contact', (req, res) => {
         res.render('contact', { isLogin });
-    });
-
-    app.get('/project-detail/:id', (req, res) => {
-        let id = req.params.id;
-
-        res.render('project-detail', {
-            projectDetail: {
-                id,
-                name: 'Project membuat aplikasi rental PS',
-                description: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,
-            molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum
-            numquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium
-            optio, eaque rerum! Provident similique accusantium nemo autem. Veritatis
-            obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam
-            nihil, eveniet aliquid culpa officia aut! Impedit sit sunt quaerat, odit,
-            tenetur error, harum nesciunt ipsum debitis quas aliquid. Reprehenderit,
-            quia. Quo neque error repudiandae fuga? Ipsa laudantium molestias eos 
-            sapiente officiis modi at sunt excepturi expedita sint? Sed quibusdam
-            recusandae alias error harum maxime adipisci amet laborum. Perspiciatis 
-            minima nesciunt dolorem! Officiis iure rerum voluptates a cumque velit 
-            quibusdam sed amet tempora. Sit laborum ab, eius fugit doloribus tenetur 
-            fugiat, temporibus enim commodi iusto libero magni deleniti quod quam 
-            consequuntur! Commodi minima excepturi repudiandae velit hic maxime
-            doloremque. Quaerat provident commodi consectetur veniam similique ad 
-            earum omnis ipsum saepe, voluptas, hic voluptates pariatur est explicabo 
-            fugiat, dolorum eligendi quam cupiditate excepturi mollitia maiores labore 
-            suscipit quas? Nulla, placeat. Voluptatem quaerat non architecto ab laudantium
-            modi minima sunt esse temporibus sint culpa, recusandae aliquam numquam 
-            totam ratione voluptas quod exercitationem fuga. Possimus quis earum veniam 
-            quasi aliquam eligendi, placeat qui corporis!`,
-                image: '../assets/img/projek1.jpeg',
-                duration: '1 month',
-            }
-        });
     });
 
     app.get('/add-project', (req, res) => {
@@ -130,86 +113,84 @@ db.connect((err, client, done) => {
 
     app.get('/edit-project/:id', (req, res) => {
         let id = req.params.id;
-        let project = dataProject.find((item) => {
-            return item.id == id;
-        });
+        client.query(`SELECT * FROM public.tb_project WHERE id=${id}`, (err, result) => {
+            if (err) throw err;
 
-        console.log(project);
-        let tech = project.technologies.toString();
-        res.render('edit-project', { project, tech });
+            let project = result.rows[0];
+
+            project.start_date = convertyyyymmdd(project.start_date)
+            project.end_date = convertyyyymmdd(project.end_date)
+
+            console.log(project);
+            let tech = project.technologies.toString();
+            res.render('edit-project', { project, tech });
+        });
     });
 
-    app.post('/edit-project/:id', multipartMiddleware, (req, res) => {
-        let id = req.params.id;
-        let name = req.body.name;
-        let startdate = req.body.startdate;
-        let enddate = req.body.enddate;
-        let description = req.body.description;
-        let duration = dhm(new Date(enddate) - new Date(startdate));
-        duration = Math.floor(duration / 30) <= 0 ? duration + ' hari' : duration % 30 == 0 ? Math.floor(duration / 30) + ' bulan ' : Math.floor(duration / 30) + ' bulan ' + duration % 30 + ' hari';
-        let technologies = req.body.technologies;
-        let imagepath = req.files.imageupload.path;
-        let imageupload = imagepath.split('\\');
-        imageupload = imageupload[imageupload.length - 1];
-        // console.log(imageupload);
-        // console.log(tech);
+    // app.post('/edit-project/:id', multipartMiddleware, (req, res) => {
+    //     let id = req.params.id;
+    //     let name = req.body.name;
+    //     let startdate = req.body.startdate;
+    //     let enddate = req.body.enddate;
+    //     let description = req.body.description;
+    //     let duration = dhm(new Date(enddate) - new Date(startdate));
+    //     duration = Math.floor(duration / 30) <= 0 ? duration + ' hari' : duration % 30 == 0 ? Math.floor(duration / 30) + ' bulan ' : Math.floor(duration / 30) + ' bulan ' + duration % 30 + ' hari';
+    //     let technologies = req.body.technologies;
+    //     let imagepath = req.files.imageupload.path;
+    //     let imageupload = imagepath.split('\\');
+    //     imageupload = imageupload[imageupload.length - 1];
+    //     // console.log(imageupload);
+    //     // console.log(tech);
 
-        dataProject.forEach((item) => {
-            if (item.id == id) {
-                item.name = name;
-                item.startdate = startdate;
-                item.enddate = enddate;
-                item.description = description;
-                item.duration = duration;
-                item.technologies = technologies;
-                item.imageupload = imageupload;
-            }
-        });
+    //     let query = `SELECT * FROM public.tb_project SET name=${name}, start_date=${startdate}, end_date=${enddate}, description=${description}, technologies=${technologies}, image=${imageupload} WHERE id=${id}`;
 
-        res.redirect('/');
-    });
+    //     client.query(query, (err, result) => {
 
-    app.post('/add-project', multipartMiddleware, (req, res) => {
-        let startdate = req.body.startdate;
-        let enddate = req.body.enddate;
-        let duration = dhm(new Date(enddate) - new Date(startdate));
-        duration = Math.floor(duration / 30) <= 0 ? duration + ' hari' : duration % 30 == 0 ? Math.floor(duration / 30) + ' bulan ' : Math.floor(duration / 30) + ' bulan ' + duration % 30 + ' hari';
-        let imagepath = req.files.imageupload.path;
-        let imageupload = imagepath.split('\\');
-        imageupload = imageupload[imageupload.length - 1];
-        // console.log(imageupload[imageupload.length - 1]);
+    //         if (err) throw err;
 
-        let project = {
-            id: dataProject.length + 1,
-            name: req.body.name,
-            startdate,
-            enddate,
-            duration,
-            description: req.body.description,
-            technologies: req.body.technologies,
-            imageupload,
-        };
+    //         console.log(result);
+    //         return;
+    //         res.redirect('/');
+    //     });
 
-        // console.log(req.files);
-        dataProject.push(project);
-        res.redirect('/');
-    });
+    // });
 
-    app.get('/delete-project/:id', (req, res) => {
-        let id = req.params.id;
+    // app.post('/add-project', multipartMiddleware, (req, res) => {
+    //     let startdate = req.body.startdate;
+    //     let enddate = req.body.enddate;
+    //     let duration = dhm(new Date(enddate) - new Date(startdate));
+    //     duration = Math.floor(duration / 30) <= 0 ? duration + ' hari' : duration % 30 == 0 ? Math.floor(duration / 30) + ' bulan ' : Math.floor(duration / 30) + ' bulan ' + duration % 30 + ' hari';
+    //     let imagepath = req.files.imageupload.path;
+    //     let imageupload = imagepath.split('\\');
+    //     imageupload = imageupload[imageupload.length - 1];
+    //     // console.log(imageupload[imageupload.length - 1]);
 
-        let dataSelected = dataProject.find((item) => {
-            return item.id == id;
-        });
+    //     client.query(`INSERT INTO public.tb_project(name, start_date, end_date, description, technologies, image) VALUES(${name},${startdate},${enddate},${description},${technologies},${image})`, (err, result) => {
 
-        fs.unlinkSync(`assets/imageupload/${dataSelected.imageupload}`);
+    //         if (err) throw err;
 
-        dataProject = dataProject.filter((item) => {
-            return item.id != id;
-        });
+    //         res.redirect('/');
+    //     });
 
-        res.redirect('/');
-    });
+    // });
+
+    // app.get('/delete-project/:id', (req, res) => {
+    //     let id = req.params.id;
+
+    //     client.query(`DELETE FROM public.tb_project WHERE id=${id}`, (err, result) => {
+    //         if (err) throw err;
+    //     });
+
+    //     client.query(`SELECT * FROM public.tb_project WHERE id=${id}`, (err, result) => {
+    //         if (err) throw err;
+
+    //         let dataSelected = result.rows[0];
+
+    //         fs.unlinkSync(`assets/imageupload/${dataSelected.imageupload}`);
+    //     });
+
+    //     res.redirect('/');
+    // });
 
 });
 
